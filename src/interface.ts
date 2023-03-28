@@ -10,3 +10,9 @@ interface iProduct {
 interface iCleaningProduct extends iProduct {}
 
 interface iFoodProduct extends iProduct { calories: number }
+
+export {
+  iProduct,
+  iCleaningProduct,
+  iFoodProduct
+}
