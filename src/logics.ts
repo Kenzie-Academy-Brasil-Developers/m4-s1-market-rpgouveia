@@ -3,9 +3,11 @@ import { market } from "./database"
 import { iProduct } from "./interface"
 
 const createProduct = (request: Request, response: Response): Response => {
-  const newProduct: iProduct = request.body
-  market.push(newProduct)
-  return response.status(201).json(newProduct)
+  const newProducts: iProduct[] = request.body
+  newProducts.forEach((object: iProduct) => {
+    market.push(object)
+  })
+  return response.status(201).json(market)
 }
 
 const readProducts = (request: Request, response: Response): Response => {
