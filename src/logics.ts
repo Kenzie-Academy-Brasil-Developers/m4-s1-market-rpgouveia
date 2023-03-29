@@ -2,28 +2,50 @@ import { Request, Response } from "express"
 import { market } from "./database"
 import { iProduct } from "./interface"
 
+let nextProductId = 1
+let totalValue = 0
+
 const createProduct = (request: Request, response: Response): Response => {
   const newProducts: iProduct[] = request.body
   newProducts.forEach((object: iProduct) => {
+    // Acrescenta id sequencial
+    object.id = nextProductId
+    nextProductId++
+    // Acrescenta data de expiração
+    const expirationDate = new Date()
+    expirationDate.setDate(expirationDate.getDate() + 365)
+    object.expirationDate = expirationDate
+    // Soma total de valores dos itens da lista
+    totalValue += object.price
+    // Adiciona o objeto a lista
     market.push(object)
   })
-  return response.status(201).json(market)
+  return response.status(201).json({
+    total: totalValue,
+    marketProducts: market
+  })
 }
 
 const readProducts = (request: Request, response: Response): Response => {
-  return response.status(200).json(market)
+  return response.status(200).json({
+    total: totalValue,
+    marketProducts: market
+  })
 }
 
-const readProductsById = (request: Request, response: Response): Response => {
-  const returnObject = {
-    pathParam: request.params.id,
-    queryParam: request.query.myQuery
+const retrieveProduct = (request: Request, response: Response): Response => {
+  const id = parseInt(request.params.id)
+  const foundedIndex = market.findIndex(object => object.id === id)
+  if (foundedIndex === -1) {
+    return response.status(404).json({
+      error: "Product not found"
+    })
   }
-  return response.status(200).json(returnObject)
+  return response.status(200).json(market[foundedIndex])
 }
 
 export {
   createProduct,
   readProducts,
-  readProductsById
+  retrieveProduct
 }

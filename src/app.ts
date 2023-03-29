@@ -1,17 +1,12 @@
 import express, { Application } from "express"
-import { createProduct, readProducts, readProductsById } from "./logics"
+import { createProduct, readProducts, retrieveProduct } from "./logics"
 
 const app: Application = express()
 app.use(express.json())
 
-// Criar e adicionar os produtos ao mercado
 app.post("/products", createProduct)
-
-// Listar todos os produtos do mercado, sendo possível listar pela section
 app.get("/products", readProducts)
-
-// Listar um produto específico através do seu id
-app.get("/products/:id", readProductsById)
+app.get("/products/:id", retrieveProduct)
 
 // Fazer endpoint para PATCH e DELETE por id
 

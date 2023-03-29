@@ -4,7 +4,7 @@ interface iProduct {
   price: number
   weight: number
   section: "food" | "cleaning"
-  exporationDate: Date
+  expirationDate: Date
 }
 
 interface iCleaningProduct extends iProduct {}
