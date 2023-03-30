@@ -18,7 +18,12 @@ const checkProductId = (request: Request, response: Response, next: NextFunction
 }
 
 const checkProductName = (request: Request, response: Response, next: NextFunction): Response | void => {
-  const newProducts: iProduct[] = request.body
+  let newProducts: iProduct[] = []
+  if (Array.isArray(request.body)) {
+    newProducts = request.body
+  } else {
+    newProducts.push(request.body)
+  }
   const productNames = market.map(product => product.name)
   for (const product of newProducts) {
     if (productNames.includes(product.name)) {
@@ -26,8 +31,8 @@ const checkProductName = (request: Request, response: Response, next: NextFuncti
         error: "Product already registered"
       })
     }
-    return next()
   }
+  return next()
 }
 
 export {

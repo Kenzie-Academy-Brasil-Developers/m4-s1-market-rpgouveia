@@ -8,7 +8,7 @@ app.use(express.json())
 app.post("/products", checkProductName, createProduct)
 app.get("/products", readProducts)
 app.get("/products/:id", checkProductId, retrieveProduct)
-app.patch("/products/:id", checkProductId, checkProductName,updateProduct)
+app.patch("/products/:id", checkProductId, checkProductName, updateProduct)
 app.delete("/products/:id", checkProductId, deleteProduct)
 
 const port: number = 3000
