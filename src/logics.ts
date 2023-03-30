@@ -30,26 +30,24 @@ const readProducts = (request: Request, response: Response): Response => {
 }
 
 const retrieveProduct = (request: Request, response: Response): Response => {
-  const id = parseInt(request.params.id)
-  const foundedIndex = market.findIndex(object => object.id === id)
-  if (foundedIndex === -1) {
-    return response.status(404).json({
-      error: "Product not found"
-    })
+  const index = response.locals.market.productIndex
+  return response.status(200).json(market[index])
+}
+
+const updateProduct = (request: Request, response: Response): Response => {
+  const index = response.locals.market.productIndex
+  const updateProductData = request.body
+  market[index] = {
+    ...market[index],
+    ...updateProductData
   }
-  return response.status(200).json(market[foundedIndex])
+  return response.json(market[index])
 }
 
 const deleteProduct = (request: Request, response: Response): Response => {
-  const id = parseInt(request.params.id)
-  const foundedIndex = market.findIndex(object => object.id === id)
-  if (foundedIndex === -1) {
-    return response.status(404).json({
-      error: "Product not found"
-    })
-  }
-  totalValue -= market[foundedIndex].price
-  market.splice(foundedIndex, 1)
+  const index = response.locals.market.productIndex
+  totalValue -= market[index].price
+  market.splice(index, 1)
   return response.status(204).send()
 }
 
@@ -57,5 +55,6 @@ export {
   createProduct,
   readProducts,
   retrieveProduct,
+  updateProduct,
   deleteProduct
 }
