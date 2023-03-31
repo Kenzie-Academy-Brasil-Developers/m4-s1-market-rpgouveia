@@ -1,13 +1,13 @@
 import { Request, Response } from "express"
 import { market } from "./database"
-import { iProduct } from "./interface"
+import { iCleaningProduct, iFoodProduct, iProduct } from "./interface"
 
 let nextProductId = 1
 let totalValue = 0
 
 const createProduct = (request: Request, response: Response): Response => {
-  const newProducts: iProduct[] = request.body
-  newProducts.forEach((object: iProduct) => {
+  const newProducts = request.body as (iCleaningProduct | iFoodProduct)[]
+  newProducts.forEach((object: iCleaningProduct | iFoodProduct) => {
     object.id = nextProductId
     nextProductId++
     const expirationDate = new Date()
@@ -16,16 +16,38 @@ const createProduct = (request: Request, response: Response): Response => {
     totalValue += object.price
     market.push(object)
   })
+  const marketProducts = market.map(product => {
+    const { id, name, price, weight, section, expirationDate } = product
+    if (product.section === "food") {
+      const foodProduct = product as iFoodProduct
+      const { calories } = foodProduct
+      return { id, name, price, weight, calories, section, expirationDate }
+    } else {
+      const cleaningProduct = product as iCleaningProduct
+      return { id, name, price, weight, section, expirationDate }
+    }
+  })
   return response.status(201).json({
     total: totalValue,
-    marketProducts: market
+    marketProducts
   })
 }
 
 const readProducts = (request: Request, response: Response): Response => {
+  const marketProducts = market.map(product => {
+    const { id, name, price, weight, section, expirationDate } = product
+    if (product.section === "food") {
+      const foodProduct = product as iFoodProduct
+      const { calories } = foodProduct
+      return { id, name, price, weight, calories, section, expirationDate }
+    } else {
+      const cleaningProduct = product as iCleaningProduct
+      return { id, name, price, weight, section, expirationDate }
+    }
+  })
   return response.status(200).json({
     total: totalValue,
-    marketProducts: market
+    marketProducts
   })
 }
 
