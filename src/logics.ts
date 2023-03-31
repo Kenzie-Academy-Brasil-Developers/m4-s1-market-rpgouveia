@@ -1,6 +1,6 @@
 import { Request, Response } from "express"
 import { market } from "./database"
-import { iCleaningProduct, iFoodProduct, iProduct } from "./interface"
+import { iCleaningProduct, iFoodProduct } from "./interface"
 
 let nextProductId = 1
 let totalValue = 0
@@ -59,9 +59,10 @@ const retrieveProduct = (request: Request, response: Response): Response => {
 const updateProduct = (request: Request, response: Response): Response => {
   const index = response.locals.market.productIndex
   const updateProductData = request.body
+  const { id, section, expirationDate, ...updatedFields } = updateProductData
   market[index] = {
     ...market[index],
-    ...updateProductData
+    ...updatedFields
   }
   return response.json(market[index])
 }
